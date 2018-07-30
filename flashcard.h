@@ -2,30 +2,28 @@
 #include <iostream>
 #include <string>
 
-// Linked List Invariant: following the 'next' links in a linked list
-// node must eventually lead to a NULL reference signifying the end of
-// the list. (E.g. no circular references are allowed.)
 
-// node is the basic node structure for a linked list.
 
-struct node {
-  node* next;  // next: pointer to the next node in the list, or NULL
+class node {
+  public:
+  node* next;  // next: pointer to the next node in the list, or points to NULL.
   std::string question;
   std::string answer;
 };
 
-struct flashcard {
-  int rounds;     // how many rounds the user wants to study for.
+class flashcard {
+  public:
   node* head1;
   node* head2;
+
+  bool currentLinkedList(){ // true will represent head1, false will represent head2
+    if (head2 == NULL){
+      //std::cout << "we are in head1" << std::endl;
+      return true;
+    }
+    //std::cout << "we are in head2" << std::endl;
+    return false;
+  }
 };
-
-// init_node creates a new node structure from heap memory. It points
-// to NULL and holds the provided integer. The function returns a
-// pointer to that new node.
-
-//flashcard* init_flashcard();
-
-node* add(node* root, std::string question, std::string answer);
 
 
