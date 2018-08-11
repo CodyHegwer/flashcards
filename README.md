@@ -10,16 +10,16 @@ Users can load in a list of questions with corresponding answers in a '.txt' fil
 ---------------------------------------------
 Ensure you are in the correct directory and run './flashcard'. (only works in unix terminals in current version). Try loading in 'example.txt' using the load command within the program.
 
-*add
+**add** - 
 Adds a question to your flashcards. Questions must end in a question mark '?'. Answers must end in a period '.'. If these are not satisfied, program will not add question and return you to input prompt.
 
-*delete
+**delete** - 
 Deletes a question from your flashcards. User must provide question exactly as it was typed. Program then finds question in current linked list and removes it.
 
-*preview
+**preview** - 
 Program will display all available questions that user has added or loaded in.
 
-*load
+**load** - 
 User has the option to load in a '.txt' file with question/answer pairs. Load will continue to load in questions if they are written in the correct format. Correct format will look something like:
 
     How are you doing?
@@ -29,13 +29,13 @@ Parsing will ignore empty lines, and skip until a question is found on a new lin
 
 User must write entire name of file being loaded, including the '.txt' or program will not find it.
 
-*save
+**save** - 
 Saves all question/answer pairs to a '.txt' file. Users do not need to write the '.txt' here as they do in load. Simply provide the desired filename you wish to write to.
 
-*study
+**study** - 
 Users can study the flashcards they have assembled. Users can specify how many rounds they would like to study for. A 'round' finishes once the user has answered all of their questions correctly. As questions are answered correctly, they are popped from the list and added to the other linked list in the flashcard class. Users cannot leave study session early without terminating program in current version. Studying will finish once user has completed all rounds.
 
-*exit
+**exit** - 
 Terminates program and returns user back to shell/command line.
 
 ### Makefile
