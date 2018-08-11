@@ -1,4 +1,5 @@
-// cin with strings
+
+
 #include "flashcard.h"
 #include <iostream>
 #include <string>
@@ -7,6 +8,11 @@
 using namespace std;
 
 
+
+//////////////////////////////////////////////////////////////////////////////
+// Initialize flashcards for use 
+//
+//
 flashcard* init_flashcard(){
   flashcard* ret = new flashcard;
   ret->head1 = NULL;
@@ -15,7 +21,10 @@ flashcard* init_flashcard(){
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Adds a question to the current list. User can call this function 
+// from the program to add a question to the current linked list.
+// Study will call this function to move popped questions to new linked list
 void add(flashcard* flashcards, bool currentHead, std::string question, std::string answer){
 
   node* retnode = new node;
@@ -57,8 +66,11 @@ void add(flashcard* flashcards, bool currentHead, std::string question, std::str
 }
 
 
-
-void deleteNode(node** top, bool currentHead, std::string question){
+//////////////////////////////////////////////////////////////////////////////
+// Deletes a question from the current list. User can call this function from 
+// the program to delete a question from the current linked list. Study will
+// call this function to remove popped questions from current linked list
+void deleteNode(node** top, std::string question){
 
   cout << endl;
 
@@ -99,7 +111,10 @@ void deleteNode(node** top, bool currentHead, std::string question){
 
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Previews all available questions 
+// 
+// 
 void preview(node** top){
   
   if (*top == NULL){
@@ -122,7 +137,10 @@ void preview(node** top){
 
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Not accessible to user, but could easily be implemented. Used in 'study'
+// to return number of questions
+// 
 int get_count(flashcard* flashcards, bool currentHead){
   int count = 0;
 
@@ -142,7 +160,10 @@ int get_count(flashcard* flashcards, bool currentHead){
 
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Study function runs for a user specified amount of rounds, limited to 9.
+// A round consists of responding correctly to all user questions.
+// 
 void study(flashcard* flashcards, bool currentHead){
 
   string mystr, currentQuestion, currentAnswer;
@@ -191,6 +212,7 @@ void study(flashcard* flashcards, bool currentHead){
         random--;
       }
 
+      // iterate through current linked list
       currentQuestion = cursor->question;
       currentAnswer = cursor->answer;
       cout << currentQuestion << endl;
@@ -199,7 +221,7 @@ void study(flashcard* flashcards, bool currentHead){
       // user was correct.
       if (currentAnswer.compare(mystr) == 0){
         // delete question from current linked list.
-        deleteNode(top, currentHead, currentQuestion);
+        deleteNode(top, currentQuestion);
         add(flashcards, !currentHead, currentQuestion, currentAnswer);
         count--;
       } else {
@@ -211,13 +233,16 @@ void study(flashcard* flashcards, bool currentHead){
   
   }
 
-  cout << "STUDY SESSION COMPLETE" << "\n\n";
+  cout << "STUDY SESSION COMPLETE\n\n";
 
   return;
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Saves all current list of questions to a '.txt' file. 
+// User need only type the desired title of the '.txt' file.
+// Do not include '.txt' in filename here.
 void save(node** top){
   ofstream f;
   string filename;
@@ -238,31 +263,59 @@ void save(node** top){
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Loads a list of questions into the program.  
+// User DOES need to include '.txt' here.
+// Questions must end in "?", Answers must end in "."
 void load(string filename, flashcard* flashcards, bool currentHead){
   string line, currentQuestion, currentAnswer;
   ifstream myfile (filename.c_str());
+
+  int count = 1; // return number of successfully loaded questions
+  std::string blankLine = "";
 
   if (myfile.is_open())
   {
     while ( getline (myfile, line) )
     {
+
+      // empty line, skip to next
+      if (blankLine.compare(line) == 0){
+        continue;
+      }
+
       currentQuestion = line;
+      // check if question is valid question. Break and return to main
+      if (currentQuestion.back() != '?'){
+        cout << "Question " << count << " does not end in '?'. Exiting...\n";
+        break;
+      }
+
       getline (myfile, line);
+      // check if answer is valid answer. Break and return to main
       currentAnswer = line;
+      if (currentAnswer.back() != '.'){
+        cout << "Question " << count << "'s answer does not end in '.'. Exiting...\n";
+        break;
+      }
+
       add(flashcards, currentHead, currentQuestion, currentAnswer);
+      count++;
     }
     myfile.close();
-    cout << "Load completed.\n\n";
+    cout << "Number of questions loaded: " << count-1 << "\n\n";
   }
 
-  else cout << "Unable to open file\n\n"; 
+  else cout << "Unable to open file\nEnsure you include '.txt'\n\n"; 
   return;
 }
 
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+// Main function for flashcard.cpp. User will essentially be in while loop 
+// providing commands. Once 'exit' is given user will be returned back to 
+// shell/command line
 int main ()
 {
 
@@ -295,7 +348,7 @@ int main ()
     cout << "'load' - Loads a text document saved with flashcards." << endl;
     cout << "'save' - Saves your current flashcards to a text document in current directory." << endl;
     cout << "'study' - Begins a study session with current flashcards." << endl;
-    cout << "'exit' - Exits out of program.\n\n";
+    cout << "'exit' - Exits out of program.\n\n    Input: ";
     getline (cin, mystr); cout << endl;
     
     //////////////
@@ -336,7 +389,7 @@ int main ()
         cout << "Invalid question - questions need to end with '?'\n\n";
         continue;
       }
-      deleteNode(TOP, CURRENTHEAD, QUESTION);
+      deleteNode(TOP, QUESTION);
       continue;
     }
 
@@ -378,10 +431,15 @@ int main ()
       continue;
     }
 
+    //////////////
+    // exit
+    //////////////
+
     if (mystr.compare("exit") == 0){
       return 0;
     }
 
+    // invalid input
     cout << "Invalid option.\n\n";
   }
 
